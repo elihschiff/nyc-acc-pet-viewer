@@ -1076,11 +1076,59 @@ const allLocations = [...new Set(PETS.map(p => p.location).filter(Boolean))].sor
 
 // State persistence
 const STORAGE_KEY = 'nycacc_filters';
+const DEFAULTS = {
+  species: 'Cat', ageMin: 0, ageMax: 240,
+  weightMin: 0, weightMax: 150,
+  gender: 'all', fixed: 'all', experienced: 'all', staffAddress: 'all', showGone: 'hide',
+  locations: [], breeds: [], colors: [],
+  descInclude: '', descExclude: '',
+  nameSearch: '', sort: 'days-asc',
+};
+const SET_KEYS = ['locations', 'breeds', 'colors'];
+
+function stateToParams() {
+  const p = new URLSearchParams();
+  for (const [k, def] of Object.entries(DEFAULTS)) {
+    const val = SET_KEYS.includes(k) ? [...state[k]] : state[k];
+    const defVal = SET_KEYS.includes(k) ? [] : def;
+    if (SET_KEYS.includes(k)) {
+      if (val.length > 0) p.set(k, val.join('|'));
+    } else if (val !== defVal) {
+      p.set(k, val);
+    }
+  }
+  return p;
+}
+
+function paramsToState(params) {
+  const s = {};
+  for (const [k, def] of Object.entries(DEFAULTS)) {
+    if (SET_KEYS.includes(k)) {
+      const raw = params.get(k);
+      s[k] = new Set(raw ? raw.split('|').filter(Boolean) : []);
+    } else if (typeof def === 'number') {
+      s[k] = params.has(k) ? parseInt(params.get(k)) : def;
+    } else {
+      s[k] = params.has(k) ? params.get(k) : def;
+    }
+  }
+  return s;
+}
+
 function saveState() {
   const s = {...state, locations: [...state.locations], breeds: [...state.breeds], colors: [...state.colors]};
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+  const params = stateToParams();
+  const qs = params.toString();
+  const newUrl = qs ? location.pathname + '?' + qs : location.pathname;
+  history.replaceState(null, '', newUrl);
 }
+
 function loadState() {
+  // URL params take priority (for shared links)
+  const urlParams = new URLSearchParams(location.search);
+  if (urlParams.toString()) return paramsToState(urlParams);
+  // Fall back to localStorage
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
@@ -1095,15 +1143,11 @@ function loadState() {
   } catch(e) { return null; }
 }
 
-const defaults = {
-  species: 'Cat', ageMin: 0, ageMax: 240,
-  weightMin: 0, weightMax: 150,
-  gender: 'all', fixed: 'all', experienced: 'all', staffAddress: 'all', showGone: 'hide',
-  locations: new Set(), breeds: new Set(), colors: new Set(),
-  descInclude: '', descExclude: '',
-  nameSearch: '', sort: 'days-asc',
-};
-let state = loadState() || {...defaults, locations: new Set(), breeds: new Set(), colors: new Set()};
+let state = loadState() || (function() {
+  const s = {...DEFAULTS};
+  SET_KEYS.forEach(k => s[k] = new Set());
+  return s;
+})();
 
 // Build species tabs
 const speciesTabs = document.getElementById('speciesTabs');
