@@ -1370,7 +1370,8 @@ function renderCarousel(p) {
 
 function renderCard(p) {
   const days = p._days;
-  let daysBadge = `<span class="badge badge-days">${days}d in system</span>`;
+  const daysLabel = days < 1 ? Math.max(1, Math.floor((NOW - new Date(p.intakeDate).getTime()) / 3600000)) + 'h' : days + 'd';
+  let daysBadge = `<span class="badge badge-days">${daysLabel} in system</span>`;
 
   let extraBadges = '';
   if (days <= 3) extraBadges += '<span class="badge badge-new">New arrival</span>';
