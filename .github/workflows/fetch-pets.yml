@@ -1,0 +1,51 @@
+name: Fetch NYC ACC Pets
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch: {}  # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master (script source)
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: source
+
+      - name: Checkout gh-pages (data + site)
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+
+      - name: Create gh-pages dir if branch doesn't exist yet
+        run: mkdir -p site
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch pets and build site
+        run: python source/fetch_and_build.py --output-dir site --no-open
+
+      - name: Deploy to gh-pages
+        run: |
+          cd site
+          git init 2>/dev/null || true
+          git checkout -B gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html nycacc_history.json
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+          git commit -m "Update pet data — ${TIMESTAMP}" || echo "No changes to commit"
+          git remote remove origin 2>/dev/null || true
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push -f origin gh-pages
