@@ -1681,8 +1681,9 @@ def load_history():
 
 
 def save_history(history):
+    sorted_history = dict(sorted(history.items(), key=lambda x: int(x[0])))
     with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        json.dump(history, f, ensure_ascii=False)
+        json.dump(sorted_history, f, ensure_ascii=False, indent=1, sort_keys=True)
 
 
 def merge_pets(live_pets, updated):
