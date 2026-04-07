@@ -991,7 +991,7 @@ body {
         <button class="toggle-btn" data-val="no">Not required</button>
         <button class="toggle-btn" data-val="yes">Required</button>
       </div>
-      <div class="filter-hint">Filters based on "experienced" in description.</div>
+      <div class="filter-hint">Filters based on "experienced" or "extra help" in description.</div>
     </div>
 
     <div class="filter-section">
@@ -1092,7 +1092,7 @@ PETS.forEach(p => {
   p._weight = parseWeight(p.weight);
   p._days = daysSince(p.intakeDate);
   p._searchText = ((p.summary || '') + ' ' + (p.name || '')).toLowerCase();
-  p._experienced = p._searchText.includes('experienced');
+  p._experienced = p._searchText.includes('experienced') || p._searchText.includes('extra help');
   p._staffAddress = p._searchText.includes('staff will address');
 });
 
