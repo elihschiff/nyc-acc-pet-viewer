@@ -126,9 +126,14 @@ body {
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 .header h1 {
   font-family: var(--font-display);
@@ -163,7 +168,7 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 260px 1fr;
   gap: 0;
   min-height: calc(100vh - 120px);
 }
@@ -172,7 +177,7 @@ body {
 .sidebar {
   background: var(--bg-filter);
   border-right: 1px solid var(--border);
-  padding: 1.5rem;
+  padding: 0.8rem;
   position: sticky;
   top: 42px;
   height: calc(100vh - 42px);
@@ -181,32 +186,32 @@ body {
   scrollbar-color: var(--border) transparent;
 }
 .filter-section {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--border);
 }
 .filter-section:last-child { border-bottom: none; }
 .filter-section h3 {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 400;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.3rem;
   color: var(--text);
 }
 
 /* Species tabs */
 .species-tabs {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.25rem;
   flex-wrap: wrap;
 }
 .species-tab {
-  padding: 0.4rem 0.9rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 99px;
   border: 1px solid var(--border);
   background: var(--bg-card);
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   cursor: pointer;
   transition: all 0.15s;
   color: var(--text-muted);
@@ -219,22 +224,22 @@ body {
   border-color: var(--accent);
 }
 .species-tab .count {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   opacity: 0.7;
-  margin-left: 0.2rem;
+  margin-left: 0.15rem;
 }
 
 /* Range sliders */
 .range-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.3rem;
+  gap: 0.3rem;
+  margin-bottom: 0.1rem;
 }
 .range-row label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  width: 32px;
+  width: 28px;
   flex-shrink: 0;
 }
 .range-row input[type="range"] {
@@ -243,29 +248,29 @@ body {
   height: 4px;
 }
 .range-value {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text);
-  width: 50px;
+  width: 40px;
   text-align: right;
   flex-shrink: 0;
 }
 
-/* Checkboxes / pills for locations */
+/* Checkboxes / pills */
 .location-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
-  max-height: 200px;
+  gap: 0.2rem;
+  max-height: 150px;
   overflow-y: auto;
   scrollbar-width: thin;
 }
 .location-pill {
-  padding: 0.25rem 0.6rem;
+  padding: 0.15rem 0.45rem;
   border-radius: 99px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   cursor: pointer;
   transition: all 0.15s;
   color: var(--text-muted);
@@ -282,37 +287,37 @@ body {
 /* Text search inputs */
 .text-filter {
   width: 100%;
-  padding: 0.5rem 0.7rem;
+  padding: 0.3rem 0.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   background: var(--bg-card);
   color: var(--text);
   outline: none;
   transition: border-color 0.15s;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.2rem;
 }
 .text-filter:focus { border-color: var(--accent); }
 .text-filter::placeholder { color: var(--text-light); }
 .filter-hint {
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   color: var(--text-light);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 /* Gender / Fixed toggles */
 .toggle-group {
   display: flex;
-  gap: 0.3rem;
+  gap: 0.2rem;
 }
 .toggle-btn {
   flex: 1;
-  padding: 0.35rem 0.5rem;
+  padding: 0.2rem 0.35rem;
   border: 1px solid var(--border);
   background: var(--bg-card);
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   cursor: pointer;
   text-align: center;
   transition: all 0.15s;
@@ -330,11 +335,11 @@ body {
 /* Sort */
 .sort-select {
   width: 100%;
-  padding: 0.5rem 0.7rem;
+  padding: 0.3rem 0.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   background: var(--bg-card);
   color: var(--text);
   outline: none;
@@ -344,12 +349,12 @@ body {
 
 .reset-btn {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.35rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: transparent;
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s;
@@ -697,9 +702,9 @@ body {
   font-weight: 600;
 }
 .badge-gone {
-  background: #f0f0f0;
-  color: #666;
-  border: 1px solid #ccc;
+  background: var(--new-bg);
+  color: var(--new-text);
+  border: 1px solid var(--new-border);
   font-weight: 600;
 }
 .pet-card.gone {
@@ -747,18 +752,15 @@ body {
 .view-tabs {
   display: flex;
   gap: 0;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0.8rem 2rem 0;
 }
 .view-tab {
-  padding: 0.5rem 1.5rem;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+  padding: 0.35rem 1rem;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.1);
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.6);
   font-weight: 500;
   transition: all 0.15s;
 }
@@ -769,7 +771,7 @@ body {
   color: white;
   border-color: var(--accent);
 }
-.view-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+.view-tab:hover:not(.active) { background: rgba(255,255,255,0.15); color: white; }
 
 /* Charts */
 .charts-view {
@@ -777,10 +779,26 @@ body {
   margin: 0 auto;
   padding: 1.5rem 2rem;
 }
+.charts-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.charts-data-toggle {
+  display: flex;
+  gap: 0;
+}
+.charts-data-toggle .toggle-btn {
+  border-radius: 0;
+}
+.charts-data-toggle .toggle-btn:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.charts-data-toggle .toggle-btn:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 .charts-species-tabs {
   display: flex;
   gap: 0.4rem;
-  margin-bottom: 1.2rem;
 }
 .charts-species-tab {
   padding: 0.4rem 0.9rem;
@@ -862,12 +880,14 @@ body {
 <div class="header">
   <div class="header-inner">
     <h1>NYC <span>ACC</span> — Find Your Companion</h1>
-    <div class="header-meta">Updated __UPDATED__</div>
+    <div class="header-right">
+      <div class="view-tabs">
+        <button class="view-tab active" data-view="browse" onclick="switchView('browse')">Browse</button>
+        <button class="view-tab" data-view="charts" onclick="switchView('charts')">Charts</button>
+      </div>
+      <div class="header-meta">Updated __UPDATED__</div>
+    </div>
   </div>
-</div>
-<div class="view-tabs">
-  <button class="view-tab active" data-view="browse" onclick="switchView('browse')">Browse</button>
-  <button class="view-tab" data-view="charts" onclick="switchView('charts')">Charts</button>
 </div>
 <div class="results-count" id="resultsCount"></div>
 
@@ -880,20 +900,20 @@ body {
     </div>
 
     <div class="filter-section">
-      <h3>Show Removed Pets</h3>
+      <h3>Show Adopted Pets</h3>
       <div class="toggle-group" id="goneToggle">
         <button class="toggle-btn active" data-val="hide">Hide</button>
         <button class="toggle-btn" data-val="show">Show</button>
         <button class="toggle-btn" data-val="only">Only</button>
       </div>
-      <div class="filter-hint" style="margin-top:0.4rem">Pets no longer listed on NYC ACC.</div>
+      <div class="filter-hint">Pets that have been adopted or otherwise removed from NYC ACC.</div>
     </div>
 
     <div class="filter-section">
       <h3>Sort By</h3>
       <select class="sort-select" id="sortSelect">
         <option value="days-asc">Newest arrivals</option>
-        <option value="days-desc">Longest in system</option>
+        <option value="days-desc">Longest in shelter</option>
         <option value="name-asc">Name A–Z</option>
         <option value="name-desc">Name Z–A</option>
         <option value="age-asc">Youngest first</option>
@@ -971,7 +991,7 @@ body {
         <button class="toggle-btn" data-val="no">Not required</button>
         <button class="toggle-btn" data-val="yes">Required</button>
       </div>
-      <div class="filter-hint" style="margin-top:0.4rem">Filters based on "experienced" in description.</div>
+      <div class="filter-hint">Filters based on "experienced" in description.</div>
     </div>
 
     <div class="filter-section">
@@ -981,7 +1001,7 @@ body {
         <button class="toggle-btn" data-val="hide">Hide these</button>
         <button class="toggle-btn" data-val="only">Only these</button>
       </div>
-      <div class="filter-hint" style="margin-top:0.4rem">Filters based on "staff will address" in description.</div>
+      <div class="filter-hint">Filters based on "staff will address" in description.</div>
     </div>
 
     <div class="filter-section">
@@ -1008,7 +1028,13 @@ body {
 </div>
 
 <div class="charts-view" id="chartsView" style="display:none">
-  <div class="charts-species-tabs" id="chartSpeciesTabs"></div>
+  <div class="charts-toolbar">
+    <div class="charts-species-tabs" id="chartSpeciesTabs"></div>
+    <div class="charts-data-toggle">
+      <button class="toggle-btn active" data-val="active" onclick="setChartScope('active')">In shelter</button>
+      <button class="toggle-btn" data-val="all" onclick="setChartScope('all')">All (incl. adopted)</button>
+    </div>
+  </div>
   <div class="charts-grid">
     <div class="chart-card"><h3>Time in Shelter</h3><canvas id="chartDays"></canvas></div>
     <div class="chart-card"><h3>Average Weight by Age</h3><canvas id="chartWeightAge"></canvas></div>
@@ -1415,7 +1441,24 @@ function renderCarousel(p) {
 function renderCard(p) {
   const days = p._days;
   const daysLabel = days < 1 ? Math.max(1, Math.floor((NOW - new Date(p.intakeDate).getTime()) / 3600000)) + 'h' : days + 'd';
-  let daysBadge = `<span class="badge badge-days">${daysLabel} in system</span>`;
+  let daysBadge = `<span class="badge badge-days">${daysLabel} in shelter</span>`;
+
+  let goneBadge = '';
+  if (p._gone) {
+    let goneInfo = 'Adopted';
+    if (p._goneDate) {
+      const goneMs = NOW - new Date(p._goneDate).getTime();
+      const goneHours = Math.floor(goneMs / 3600000);
+      const goneDays = Math.floor(goneMs / 86400000);
+      const goneAgo = goneDays < 1 ? Math.max(1, goneHours) + 'h ago' : goneDays + 'd ago';
+      goneInfo += ' ' + goneAgo;
+    }
+    if (p._firstSeen && p._goneDate) {
+      const stayDays = Math.floor((new Date(p._goneDate).getTime() - new Date(p._firstSeen).getTime()) / 86400000);
+      if (stayDays > 0) goneInfo += ' \u2014 was listed ' + stayDays + 'd';
+    }
+    goneBadge = `<span class="badge badge-gone">${goneInfo}</span>`;
+  }
 
   let extraBadges = '';
   if (days <= 3) extraBadges += '<span class="badge badge-new">New arrival</span>';
@@ -1423,7 +1466,6 @@ function renderCard(p) {
     extraBadges += '<span class="badge badge-urgent">Needs rescue</span>';
   if (p.location === 'In Foster') extraBadges += '<span class="badge badge-foster">In foster</span>';
   if (p.spayedNeutered && p.spayedNeutered !== 'Yes') extraBadges += '<span class="badge badge-not-fixed">Not spayed/neutered</span>';
-  if (p._gone) extraBadges += `<span class="badge badge-gone">No longer listed${p._goneDate ? ' \u2014 ' + p._goneDate.substring(0,10) : ''}</span>`;
 
   const breeds = (p.breeds || []).map(b => `<span class="badge badge-breed">${escapeHtml(b)}</span>`).join('');
   const colors = (p.colors || []).map(c => `<span class="badge badge-color">${escapeHtml(c)}</span>`).join('');
@@ -1443,7 +1485,7 @@ function renderCard(p) {
         <span>${escapeHtml(p.location) || ''}</span>
       </div>
       <div class="pet-card-badges">
-        ${daysBadge}${extraBadges}${breeds}${colors}
+        ${goneBadge}${daysBadge}${extraBadges}${breeds}${colors}
       </div>
       ${descBlock}
     </div>
@@ -1456,7 +1498,7 @@ function render() {
   const countEl = document.getElementById('resultsCount');
 
   const goneCount = pets.filter(p => p._gone).length;
-  const goneLabel = goneCount > 0 ? ` <span style="color:var(--text-light)">(${goneCount} no longer listed)</span>` : '';
+  const goneLabel = goneCount > 0 ? ` <span style="color:var(--text-light)">(${goneCount} adopted)</span>` : '';
   countEl.innerHTML = `Showing <strong>${pets.length}</strong> ${state.species.toLowerCase()}${pets.length !== 1 ? 's' : ''}${goneLabel}`;
 
   if (pets.length === 0) {
@@ -1555,6 +1597,13 @@ document.addEventListener('keydown', (e) => {
 // View switching
 let chartInstances = {};
 let chartSpecies = 'Cat';
+let chartScope = 'active';
+
+function setChartScope(scope) {
+  chartScope = scope;
+  document.querySelectorAll('.charts-data-toggle .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === scope));
+  renderCharts();
+}
 
 function buildChartSpeciesTabs() {
   const container = document.getElementById('chartSpeciesTabs');
@@ -1585,7 +1634,8 @@ function switchView(view) {
 }
 
 function renderCharts() {
-  const pets = PETS.filter(p => p.species === chartSpecies);
+  let pets = PETS.filter(p => p.species === chartSpecies);
+  if (chartScope === 'active') pets = pets.filter(p => !p._gone);
   const accent = '#c2703e';
   const accentSoft = '#f0ddd0';
   const colors6 = ['#c2703e','#8a7e74','#3d6b35','#6b4d8a','#9b3535','#2c6e8a'];
