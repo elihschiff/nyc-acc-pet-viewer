@@ -836,6 +836,26 @@ body {
   }
 }
 </style>
+<script>
+  (function(h,o,u,n,d) {
+    h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
+    d=o.createElement(u);d.async=1;d.src=n;d.crossOrigin=''
+    n=o.getElementsByTagName(u)[0];n.parentNode.insertBefore(d,n)
+  })(window,document,'script','https://www.datadoghq-browser-agent.com/us1/v6/datadog-rum.js','DD_RUM')
+  window.DD_RUM.onReady(function() {
+    window.DD_RUM.init({
+      clientToken: 'pub78a116d712b53b48b04b0d4673daffce',
+      applicationId: 'c22bcaa5-1c66-409e-9797-388b586e6b7b',
+      site: 'datadoghq.com',
+      service: 'nyc-acc-pet-viewer',
+      env: 'prod',
+      sessionSampleRate: 100,
+      sessionReplaySampleRate: 20,
+      trackBfcacheViews: true,
+      defaultPrivacyLevel: 'mask-user-input',
+    });
+  })
+</script>
 </head>
 <body>
 
