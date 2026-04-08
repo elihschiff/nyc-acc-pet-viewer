@@ -1183,6 +1183,7 @@ allSpecies.forEach(sp => {
   btn.innerHTML = `${sp} <span class="count">${count}</span>`;
   btn.dataset.species = sp;
   btn.onclick = () => {
+    if (state.species === sp) return;
     state.species = sp;
     document.querySelectorAll('.species-tab').forEach(b => b.classList.toggle('active', b.dataset.species === sp));
     buildLocations(true);
@@ -1335,8 +1336,15 @@ document.getElementById('resetBtn').onclick = () => {
   document.getElementById('descExclude').value = '';
   document.getElementById('nameSearch').value = '';
   document.getElementById('sortSelect').value = 'days-asc';
-  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'all'));
-  document.querySelectorAll('.location-pill').forEach(p => p.classList.remove('active'));
+  // Sync all toggle UIs to their reset values
+  ['genderToggle', 'fixedToggle', 'experiencedToggle', 'staffAddressToggle'].forEach(id => {
+    document.getElementById(id).querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'all'));
+  });
+  document.getElementById('goneToggle').querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'hide'));
+  // Rebuild pills to clear selections
+  buildLocations(true);
+  buildBreeds(true);
+  buildColors(true);
   render();
 };
 
