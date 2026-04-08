@@ -900,13 +900,12 @@ body {
     </div>
 
     <div class="filter-section">
-      <h3>Show Adopted Pets</h3>
+      <h3>Showing</h3>
       <div class="toggle-group" id="goneToggle">
-        <button class="toggle-btn active" data-val="hide">Hide</button>
-        <button class="toggle-btn" data-val="show">Show</button>
-        <button class="toggle-btn" data-val="only">Only</button>
+        <button class="toggle-btn active" data-val="hide">Currently in shelter</button>
+        <button class="toggle-btn" data-val="show">All</button>
+        <button class="toggle-btn" data-val="only">Adopted only</button>
       </div>
-      <div class="filter-hint">Pets that have been adopted or otherwise removed from NYC ACC.</div>
     </div>
 
     <div class="filter-section">
@@ -964,8 +963,8 @@ body {
       <h3>Spayed / Neutered</h3>
       <div class="toggle-group" id="fixedToggle">
         <button class="toggle-btn active" data-val="all">All</button>
-        <button class="toggle-btn" data-val="Yes">Yes</button>
-        <button class="toggle-btn" data-val="No">No</button>
+        <button class="toggle-btn" data-val="yes">Yes</button>
+        <button class="toggle-btn" data-val="no">No</button>
       </div>
     </div>
 
@@ -1465,7 +1464,7 @@ function renderCard(p) {
   if (p.summaryHtml && p.summaryHtml.includes('emergency') || p.summaryHtml && p.summaryHtml.includes('urgent'))
     extraBadges += '<span class="badge badge-urgent">Needs rescue</span>';
   if (p.location === 'In Foster') extraBadges += '<span class="badge badge-foster">In foster</span>';
-  if (p.spayedNeutered && p.spayedNeutered !== 'Yes') extraBadges += '<span class="badge badge-not-fixed">Not spayed/neutered</span>';
+  if (p.spayedNeutered && p.spayedNeutered !== 'yes') extraBadges += '<span class="badge badge-not-fixed">Not spayed/neutered</span>';
 
   const breeds = (p.breeds || []).map(b => `<span class="badge badge-breed">${escapeHtml(b)}</span>`).join('');
   const colors = (p.colors || []).map(c => `<span class="badge badge-color">${escapeHtml(c)}</span>`).join('');
@@ -1814,6 +1813,8 @@ def merge_pets(live_pets, updated):
     for pet in live_pets:
         pid = str(pet["id"])
         live_ids.add(pid)
+        if pet.get("spayedNeutered"):
+            pet["spayedNeutered"] = pet["spayedNeutered"].lower()
         pet["_gone"] = False
         pet["_lastSeen"] = updated
         if pid in history:
@@ -1821,6 +1822,11 @@ def merge_pets(live_pets, updated):
         else:
             pet["_firstSeen"] = updated
         history[pid] = pet
+
+    # Normalize existing history records too
+    for pet in history.values():
+        if pet.get("spayedNeutered"):
+            pet["spayedNeutered"] = pet["spayedNeutered"].lower()
 
     for pid, pet in history.items():
         if pid not in live_ids:
