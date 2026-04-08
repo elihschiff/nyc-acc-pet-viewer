@@ -1100,7 +1100,6 @@ const allSpecies = [...new Set(PETS.map(p => p.species).filter(Boolean))].sort()
 const allLocations = [...new Set(PETS.map(p => p.location).filter(Boolean))].sort();
 
 // State persistence
-const STORAGE_KEY = 'nycacc_filters';
 const DEFAULTS = {
   species: 'Cat', ageMin: 0, ageMax: 240,
   weightMin: 0, weightMax: 150,
@@ -1141,8 +1140,6 @@ function paramsToState(params) {
 }
 
 function saveState() {
-  const s = {...state, locations: [...state.locations], breeds: [...state.breeds], colors: [...state.colors]};
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
   const params = stateToParams();
   const qs = params.toString();
   const newUrl = qs ? location.pathname + '?' + qs : location.pathname;
@@ -1150,29 +1147,11 @@ function saveState() {
 }
 
 function loadState() {
-  // URL params take priority (for shared links)
   const urlParams = new URLSearchParams(location.search);
-  if (urlParams.toString()) return paramsToState(urlParams);
-  // Fall back to localStorage
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const s = JSON.parse(raw);
-    s.locations = new Set(s.locations || []);
-    s.breeds = new Set(s.breeds || []);
-    s.colors = new Set(s.colors || []);
-    if (!s.experienced) s.experienced = 'all';
-    if (!s.staffAddress) s.staffAddress = 'all';
-    if (!s.showGone) s.showGone = 'hide';
-    return s;
-  } catch(e) { return null; }
+  return paramsToState(urlParams);
 }
 
-let state = loadState() || (function() {
-  const s = {...DEFAULTS};
-  SET_KEYS.forEach(k => s[k] = new Set());
-  return s;
-})();
+let state = loadState();
 
 // Build species tabs
 const speciesTabs = document.getElementById('speciesTabs');
@@ -1314,7 +1293,6 @@ document.getElementById('sortSelect').onchange = (e) => {
 
 // Reset
 document.getElementById('resetBtn').onclick = () => {
-  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
   state.ageMin = 0; state.ageMax = 240;
   state.weightMin = 0; state.weightMax = 150;
   state.gender = 'all'; state.fixed = 'all'; state.experienced = 'all'; state.staffAddress = 'all'; state.showGone = 'hide';
