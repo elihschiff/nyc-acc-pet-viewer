@@ -1924,19 +1924,13 @@ def send_slack_notifications(new_pets, webhook_url):
         acc_link = pet.get("link", "")
 
         lines = [
-            f":cat: *New cat: {name}* (#{pid})",
+            f"\U0001f431 New cat: {name} (#{pid})",
             "",
-            f"*Age:* {pet.get('age', 'Unknown')}  |  *Gender:* {pet.get('gender', 'Unknown')}  |  *Weight:* {pet.get('weight', 'Unknown')}",
-            f"*Location:* {pet.get('location', 'Unknown')}  |  *Spayed/Neutered:* {pet.get('spayedNeutered', 'Unknown')}",
-            f"*Breeds:* {', '.join(pet.get('breeds', [])) or 'Unknown'}  |  *Colors:* {', '.join(pet.get('colors', [])) or 'Unknown'}",
-            f"*Intake:* {(pet.get('intakeDate') or '')[:10]}",
+            f"Age: {pet.get('age', 'Unknown')}  |  Gender: {pet.get('gender', 'Unknown')}  |  Weight: {pet.get('weight', 'Unknown')}",
+            f"Location: {pet.get('location', 'Unknown')}  |  Spayed/Neutered: {pet.get('spayedNeutered', 'Unknown')}",
+            f"Breeds: {', '.join(pet.get('breeds', [])) or 'Unknown'}  |  Colors: {', '.join(pet.get('colors', [])) or 'Unknown'}",
+            f"Intake: {(pet.get('intakeDate') or '')[:10]}",
         ]
-
-        # Photo
-        photos = pet.get("photos") or []
-        if photos:
-            lines.append("")
-            lines.append(photos[0])
 
         # Description
         desc = pet.get("summary") or ""
@@ -1944,13 +1938,11 @@ def send_slack_notifications(new_pets, webhook_url):
             lines.append("")
             lines.append(desc[:1500])
 
-        # Links
-        links = []
-        if acc_link:
-            links.append(f"<{acc_link}|View on NYC ACC>")
-        links.append(f"<{viewer_link}|View on Pet Viewer>")
+        # Links — ACC link will unfurl with the photo automatically
         lines.append("")
-        lines.append(" | ".join(links))
+        if acc_link:
+            lines.append(acc_link)
+        lines.append(viewer_link)
 
         text = "\n".join(lines)
         payload = json.dumps({"text": text})
