@@ -36,6 +36,8 @@ jobs:
           python-version: '3.12'
 
       - name: Fetch pets and build site
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python source/fetch_and_build.py --output-dir site --no-open
 
       - name: Deploy to gh-pages

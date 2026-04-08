@@ -22,6 +22,18 @@ GRAPHQL_QUERY = """{
   }
 }"""
 
+NOTIFY_FILTERS = {
+    "species": "Cat",
+    "gender": "Female",
+    "ageMin": 15,       # months
+    "ageMax": 77,       # months
+    "experienced": False,  # exclude pets with "experienced" in description
+    "staffAddress": False, # exclude pets with "staff will address" in description
+    "breeds": ["Domestic Short Hair"],
+}
+
+VIEWER_URL = "https://elihschiff.github.io/nyc-acc-pet-viewer/"
+
 
 def curl_post(url, headers, body):
     cmd = ["curl", "-s", "-X", "POST", url]
@@ -1795,6 +1807,7 @@ def merge_pets(live_pets, updated):
     """
     history = load_history()
     live_ids = set()
+    new_pets = []
 
     for pet in live_pets:
         pid = str(pet["id"])
@@ -1807,6 +1820,7 @@ def merge_pets(live_pets, updated):
             pet["_firstSeen"] = history[pid].get("_firstSeen", updated)
         else:
             pet["_firstSeen"] = updated
+            new_pets.append(pet)
         history[pid] = pet
 
     # Normalize existing history records too
@@ -1826,7 +1840,134 @@ def merge_pets(live_pets, updated):
     active = sum(1 for p in all_pets if not p.get("_gone"))
     gone = sum(1 for p in all_pets if p.get("_gone"))
     print(f"History: {active} active, {gone} no longer listed, {len(all_pets)} total")
-    return all_pets
+    print(f"New pets this run: {len(new_pets)}")
+    return all_pets, new_pets
+
+
+def parse_age_months(age_str):
+    """Parse age string like '2 Years 3 Months' to total months."""
+    if not age_str:
+        return 0
+    import re
+    months = 0
+    y = re.search(r"(\d+)\s*Year", age_str, re.I)
+    m = re.search(r"(\d+)\s*Month", age_str, re.I)
+    w = re.search(r"(\d+)\s*Week", age_str, re.I)
+    d = re.search(r"(\d+)\s*Day", age_str, re.I)
+    if y:
+        months += int(y.group(1)) * 12
+    if m:
+        months += int(m.group(1))
+    if w:
+        months += int(w.group(1)) / 4.33
+    if d:
+        months += int(d.group(1)) / 30
+    return months
+
+
+def matches_filters(pet, filters):
+    """Check if a pet matches all notification filters."""
+    desc = ((pet.get("summary") or "") + " " + (pet.get("name") or "")).lower()
+
+    for key, value in filters.items():
+        if key == "ageMin":
+            if parse_age_months(pet.get("age")) < value:
+                return False
+        elif key == "ageMax":
+            if parse_age_months(pet.get("age")) > value:
+                return False
+        elif key == "experienced":
+            has_it = "experienced" in desc
+            if value and not has_it:
+                return False
+            if not value and has_it:
+                return False
+        elif key == "staffAddress":
+            has_it = "staff will address" in desc
+            if value and not has_it:
+                return False
+            if not value and has_it:
+                return False
+        elif key == "breeds":
+            pet_breeds = pet.get("breeds") or []
+            if not any(b.lower() in [v.lower() for v in value] for b in pet_breeds):
+                return False
+        elif key == "colors":
+            pet_colors = pet.get("colors") or []
+            if not any(c.lower() in [v.lower() for v in value] for c in pet_colors):
+                return False
+        else:
+            pet_value = str(pet.get(key, "")).lower()
+            if pet_value != str(value).lower():
+                return False
+    return True
+
+
+def send_slack_notifications(new_pets, webhook_url):
+    """Send a Slack message for each new pet matching NOTIFY_FILTERS."""
+    import urllib.parse
+
+    matching = [p for p in new_pets if matches_filters(p, NOTIFY_FILTERS)]
+    if not matching:
+        print(f"No new pets match notification filters (checked {len(new_pets)} new pets)")
+        return
+
+    print(f"{len(matching)} new pet(s) match filters — sending Slack notifications")
+
+    import time
+    for i, pet in enumerate(matching):
+        if i > 0:
+            time.sleep(1.5)
+        name = pet.get("name", "Unknown")
+        pid = pet.get("id", "")
+        viewer_link = f"{VIEWER_URL}?species=Cat&nameSearch={urllib.parse.quote(name)}"
+        acc_link = pet.get("link", "")
+
+        lines = [
+            f":cat: *New cat: {name}* (#{pid})",
+            "",
+            f"*Age:* {pet.get('age', 'Unknown')}  |  *Gender:* {pet.get('gender', 'Unknown')}  |  *Weight:* {pet.get('weight', 'Unknown')}",
+            f"*Location:* {pet.get('location', 'Unknown')}  |  *Spayed/Neutered:* {pet.get('spayedNeutered', 'Unknown')}",
+            f"*Breeds:* {', '.join(pet.get('breeds', [])) or 'Unknown'}  |  *Colors:* {', '.join(pet.get('colors', [])) or 'Unknown'}",
+            f"*Intake:* {(pet.get('intakeDate') or '')[:10]}",
+        ]
+
+        # Photo
+        photos = pet.get("photos") or []
+        if photos:
+            lines.append("")
+            lines.append(photos[0])
+
+        # Description
+        desc = pet.get("summary") or ""
+        if desc:
+            lines.append("")
+            lines.append(desc[:1500])
+
+        # Links
+        links = []
+        if acc_link:
+            links.append(f"<{acc_link}|View on NYC ACC>")
+        links.append(f"<{viewer_link}|View on Pet Viewer>")
+        lines.append("")
+        lines.append(" | ".join(links))
+
+        text = "\n".join(lines)
+        payload = json.dumps({"text": text})
+        try:
+            cmd = [
+                "curl", "-s", "-X", "POST", webhook_url,
+                "-H", "Content-Type: application/json",
+                "-d", payload,
+            ]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+            resp = result.stdout.strip()
+            if result.returncode == 0 and (resp == "ok" or '"ok":true' in resp):
+                print(f"  Notified: {name} (ID {pid})")
+            else:
+                print(f"  Slack error for {name}: {resp} {result.stderr}")
+        except Exception as e:
+            print(f"  Failed to notify for {name}: {e}")
 
 
 def generate_html(pets, updated):
@@ -1849,7 +1990,14 @@ def main():
     HISTORY_FILE = os.path.join(args.output_dir, "nycacc_history.json")
 
     live_pets, updated = fetch_pets()
-    all_pets = merge_pets(live_pets, updated)
+    all_pets, new_pets = merge_pets(live_pets, updated)
+
+    webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
+    if webhook_url:
+        send_slack_notifications(new_pets, webhook_url)
+    elif new_pets:
+        print(f"{len(new_pets)} new pet(s) found but SLACK_WEBHOOK_URL not set — skipping notifications")
+
     html = generate_html(all_pets, updated)
 
     os.makedirs(args.output_dir, exist_ok=True)
